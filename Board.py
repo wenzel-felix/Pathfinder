@@ -2,7 +2,7 @@ from Node import Node
 import pygame
 import colors
 from additional_windows import Collector
-import copy
+import time
 
 
 class Board:
@@ -14,8 +14,8 @@ class Board:
             x_size = 100
         elif x_size < 10:
             x_size = 10
-        if y_size > 80:
-            y_size = 80
+        if y_size > 79:
+            y_size = 79
         elif y_size < 8:
             y_size = 8
         self.board_x_size = x_size
@@ -30,11 +30,11 @@ class Board:
         self.nodes[end_y][end_x].end_node = True
 
         run = True
-        window = pygame.display.set_mode((self.board_x_size*10, self.board_y_size*10))
+        self.window = pygame.display.set_mode((self.board_x_size*10, self.board_y_size*10))
         pygame.display.set_caption("Pathfinder")
         while run:
 
-            window.fill(colors.background)
+            self.window.fill(colors.background)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -74,51 +74,71 @@ class Board:
                     if event.key == pygame.K_SPACE:
                         self.find_best_path(self.nodes[start_y][start_x], self.nodes[end_y][end_x])
 
-            for row in self.nodes:
-                for node in row:
-                    pygame.draw.rect(window, node.get_color(), (node.x_cord, node.y_cord, node.size, node.size))
+            self.draw_rectangles(self.window)
 
             pygame.display.update()
         pygame.quit()
 
+    def get_neighbours(self, x, y):
+        neighbours = []
+        if self.nodes[y][x].curr_height == 0:
+            for i in range(-1, 2, 1):
+                for j in range(-1, 2, 1):
+                    if 0 <= i + y < 80 and 0 <= j + x < 100:
+                        neighbours.append(self.nodes[y+i][x+j])
+        return neighbours
+
+    def draw_rectangles(self, window):
+        for row in self.nodes:
+            for node in row:
+                pygame.draw.rect(window, node.get_color(), (node.x_cord, node.y_cord, node.size, node.size))
+
+    def undo_exhausted(self):
+        for row in self.nodes:
+            for node in row:
+                node.exhausted = False
+
     def find_best_path(self, start_node, end_node):
         start_node.curr_height = 0
         start_node.step = 0
+        run = True
+        best_path_steps = []
 
         step = 1
         #durch while ersetzen
-        for c in range(2):
-            for row in self.nodes:
-                for node in row:
-                    node.exhausted = False
+        while run:
 
-            for row in self.nodes:
-                for node in row:
-                    if node.curr_height == 0 and not node.exhausted:
-                        node.exhausted = True
-                        try:
-                            for i in range(-1, 2, 1):
-                                for j in range(-1, 2, 1):
-                                    if node.y_cord+i >= 0 and node.x_cord+j >= 0:
-                                        temp_node = self.nodes[node.y_cord//10 + i][node.x_cord//10 + j]
-                                        if not temp_node.is_wall:
-                                            if temp_node.curr_height > 0:
-                                                temp_node.curr_height -= 1
-                                                temp_node.exhausted = True
-                                                if temp_node.curr_height == 0:
-                                                    temp_node.step = step
-                                            if temp_node.step > step:
-                                                temp_node.step = step
-                                                temp_node.path_predecessor.clear()
-                                                for x in node.path_predecessor:
-                                                    temp_node.path_predecessor.append(x)
-                                            temp_node.path_predecessor.append(node)
-                                            if temp_node == end_node:
-                                                for nodes in temp_node.path_predecessor:
-                                                    nodes.best_path = True
+            self.undo_exhausted()
 
-                        except IndexError:
-                            pass
+            for y in range(self.board_y_size):
+                for x in range(self.board_x_size):
+                    if not self.nodes[y][x].step + 2 < step:
+                        if not self.nodes[y][x].exhausted:
+                            neighbours = self.get_neighbours(x, y)
+                            for neighbour in neighbours:
+                                if not neighbour.is_wall:
+                                    if neighbour.curr_height > 0:
+                                        neighbour.curr_height -= 1
+                                        neighbour.exhausted = True
+                                        neighbour.step = step
+                    if self.nodes[y][x] == end_node:
+                        neighbours = self.get_neighbours(x, y)
+                        for neighbour in neighbours:
+                            if self.nodes[y][x].step - 1 == neighbour.step:
+                                if neighbour.step not in best_path_steps:
+                                    neighbour.best_path = True
+                                    best_path_steps.append(neighbour.step)
+                    if self.nodes[y][x].best_path:
+                        neighbours = self.get_neighbours(x, y)
+                        for neighbour in neighbours:
+                            if self.nodes[y][x].step - 1 == neighbour.step:
+                                if neighbour.step not in best_path_steps:
+                                    neighbour.best_path = True
+                                    best_path_steps.append(neighbour.step)
+                    if start_node.best_path:
+                        run = False
+
+            self.draw_rectangles(self.window)
             pygame.display.update()
             step += 1
 
