@@ -9,13 +9,13 @@ class Board:
     board_x_size = 0
     board_y_size = 0
 
-    def __init__(self, x_size=100, y_size=80):
-        if x_size > 100:
-            x_size = 100
+    def __init__(self, x_size=80, y_size=60):
+        if x_size > 80:
+            x_size = 80
         elif x_size < 10:
             x_size = 10
-        if y_size > 79:
-            y_size = 79
+        if y_size > 60:
+            y_size = 60
         elif y_size < 8:
             y_size = 8
         self.board_x_size = x_size
@@ -58,7 +58,7 @@ class Board:
                                         pass
                     except AttributeError:
                         pass
-                elif pygame.mouse.get_pressed()[2]:
+                elif pygame.mouse.get_pressed()[1]:
                     try:
                         pos = pygame.mouse.get_pos()
                         for i in range(-r, r+1, 1):
@@ -66,6 +66,20 @@ class Board:
                                 if (i*i)+(j*j) < r*r:
                                     try:
                                         self.nodes[pos[1] // 10+i][pos[0] // 10+j].is_wall = True
+                                    except IndexError:
+                                        pass
+                    except AttributeError:
+                        pass
+                elif pygame.mouse.get_pressed()[2]:
+                    try:
+                        pos = pygame.mouse.get_pos()
+                        for i in range(-r, r+1, 1):
+                            for j in range(-r, r+1, 1):
+                                if (i*i)+(j*j) < r*r:
+                                    try:
+                                        self.nodes[pos[1] // 10+i][pos[0] // 10+j].is_wall = False
+                                        if self.nodes[pos[1] // 10+i][pos[0] // 10+j].curr_height > 1:
+                                            self.nodes[pos[1] // 10+i][pos[0] // 10+j].curr_height -= 1
                                     except IndexError:
                                         pass
                     except AttributeError:
@@ -84,7 +98,7 @@ class Board:
         if self.nodes[y][x].curr_height == 0:
             for i in range(-1, 2, 1):
                 for j in range(-1, 2, 1):
-                    if 0 <= i + y < 80 and 0 <= j + x < 100:
+                    if 0 <= i + y < 60 and 0 <= j + x < 80:
                         neighbours.append(self.nodes[y+i][x+j])
         return neighbours
 
@@ -103,6 +117,7 @@ class Board:
         start_node.step = 0
         run = True
         best_path_steps = []
+        neighbour_list = []
 
         step = 1
         #durch while ersetzen
@@ -112,7 +127,7 @@ class Board:
 
             for y in range(self.board_y_size):
                 for x in range(self.board_x_size):
-                    if not self.nodes[y][x].step + 2 < step:
+                    if not self.nodes[y][x].step + 8 < step:
                         if not self.nodes[y][x].exhausted:
                             neighbours = self.get_neighbours(x, y)
                             for neighbour in neighbours:
@@ -131,10 +146,12 @@ class Board:
                     if self.nodes[y][x].best_path:
                         neighbours = self.get_neighbours(x, y)
                         for neighbour in neighbours:
-                            if self.nodes[y][x].step - 1 == neighbour.step:
-                                if neighbour.step not in best_path_steps:
-                                    neighbour.best_path = True
-                                    best_path_steps.append(neighbour.step)
+                            neighbour_list.append(neighbour.step)
+                            lowest_neighbour_step = min(neighbour_list)
+                        for neighbour in neighbours:
+                            if neighbour.step not in best_path_steps and neighbour.step == lowest_neighbour_step:
+                                neighbour.best_path = True
+                                best_path_steps.append(neighbour.step)
                     if start_node.best_path:
                         run = False
 

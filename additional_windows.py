@@ -12,20 +12,20 @@ class Collector:
     master = Tk()
 
     def submit(self):
-        if int(self.start_x_entry.get()) > 99:
-            self.start_x = 99
+        if int(self.start_x_entry.get()) > 79:
+            self.start_x = 79
         else:
             self.start_x = int(self.start_x_entry.get())
-        if int(self.start_y_entry.get()) > 79:
-            self.start_y = 79
+        if int(self.start_y_entry.get()) > 59:
+            self.start_y = 59
         else:
             self.start_y = int(self.start_y_entry.get())
-        if int(self.end_x_entry.get()) > 99:
-            self.end_x = 99
+        if int(self.end_x_entry.get()) > 79:
+            self.end_x = 79
         else:
             self.end_x = int(self.end_x_entry.get())
-        if int(self.end_y_entry.get()) > 79:
-            self.end_y = 79
+        if int(self.end_y_entry.get()) > 59:
+            self.end_y = 59
         else:
             self.end_y = int(self.end_y_entry.get())
         self.master.destroy()
