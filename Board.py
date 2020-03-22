@@ -98,8 +98,9 @@ class Board:
         if self.nodes[y][x].curr_height == 0:
             for i in range(-1, 2, 1):
                 for j in range(-1, 2, 1):
-                    if 0 <= i + y < 60 and 0 <= j + x < 80:
-                        neighbours.append(self.nodes[y+i][x+j])
+                    if i == 0 or j == 0:
+                        if 0 <= i + y < 60 and 0 <= j + x < 80:
+                            neighbours.append(self.nodes[y+i][x+j])
         return neighbours
 
     def draw_rectangles(self, window):
