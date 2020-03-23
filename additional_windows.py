@@ -67,3 +67,4 @@ class Collector:
         submit_button.place(x=60, y=100)
 
         self.master.mainloop()
+##Test
