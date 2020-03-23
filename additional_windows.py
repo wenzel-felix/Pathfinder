@@ -10,6 +10,7 @@ class Collector:
     end_y = 8
 
     master = Tk()
+    master.maxsize(width=180, height=150)
 
     def submit(self):
         if int(self.start_x_entry.get()) > 79:
@@ -32,6 +33,7 @@ class Collector:
 
 
     def __init__(self):
+
         # labels for start
         start_main_label = Label(master=self.master, text="Set your starting point")
         start_main_label.place(x=0, y=0)
@@ -61,6 +63,6 @@ class Collector:
         self.end_y_entry.place(x=100, y=60)
 
         submit_button = Button(master=self.master, text="Submit", command=self.submit)
-        submit_button.place(x=20, y=80)
+        submit_button.place(x=60, y=100)
 
         self.master.mainloop()

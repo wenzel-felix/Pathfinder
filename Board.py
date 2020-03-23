@@ -2,7 +2,6 @@ from Node import Node
 import pygame
 import colors
 from additional_windows import Collector
-import time
 
 
 class Board:
@@ -161,4 +160,8 @@ class Board:
             step += 1
 
 
-b = Board()
+def main():
+    b = Board()
+
+
+main()
