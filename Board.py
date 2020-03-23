@@ -2,6 +2,7 @@ from Node import Node
 import pygame
 import colors
 from additional_windows import Collector
+from additional_windows import InstanceManager
 
 
 class Board:
@@ -161,8 +162,10 @@ class Board:
 
 
 def main():
-    Board()
-    Board()
-
+    go = True
+    while go:
+        Board()
+        i = InstanceManager()
+        go = i.new_game
 
 main()

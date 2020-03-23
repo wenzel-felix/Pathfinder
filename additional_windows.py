@@ -8,9 +8,11 @@ class Collector:
     start_y = 0
     end_x = 10
     end_y = 8
+    different_start_end = True
 
 
     def submit(self):
+
         if int(self.start_x_entry.get()) > 79:
             self.start_x = 79
         else:
@@ -27,7 +29,10 @@ class Collector:
             self.end_y = 59
         else:
             self.end_y = int(self.end_y_entry.get())
-        self.master.destroy()
+        if self.start_x != self.end_x or self.start_y != self.end_y:
+            self.master.destroy()
+        else:
+            self.warning_label.config(text="start and end must be different", fg="red")
 
 
     def __init__(self):
@@ -63,8 +68,34 @@ class Collector:
         self.end_y_entry = Entry(master=self.master, width=8)
         self.end_y_entry.place(x=100, y=60)
 
+        self.warning_label = Label(master=self.master, text="")
+        self.warning_label.place(x=5, y=80)
+
         submit_button = Button(master=self.master, text="Submit", command=self.submit)
-        submit_button.place(x=60, y=100)
+        submit_button.place(x=80, y=100)
 
         self.master.mainloop()
-##masterbranch
+
+
+class InstanceManager:
+
+    new_game = False
+
+    def __init__(self):
+        self.master = Tk()
+        self.master.maxsize(width=150, height=60)
+
+        new_map_button = Button(master=self.master, text="Load new Map", command=self.set_new_game_true)
+        new_map_button.place(x=10, y=10)
+        exit_button = Button(master=self.master, text="Exit", command=self.set_new_game_false)
+        exit_button.place(x=110, y=10)
+
+        self.master.mainloop()
+
+    def set_new_game_true(self):
+        self.new_game = True
+        self.master.destroy()
+
+    def set_new_game_false(self):
+        self.new_game = False
+        self.master.destroy()
