@@ -65,7 +65,8 @@ class Board:
                             for j in range(-r, r+1, 1):
                                 if (i*i)+(j*j) < r*r:
                                     try:
-                                        self.nodes[pos[1] // 10+i][pos[0] // 10+j].is_wall = True
+                                        if not self.nodes[pos[1] // 10+i][pos[0] // 10+j].end_node and not self.nodes[pos[1] // 10+i][pos[0] // 10+j].start_node:
+                                            self.nodes[pos[1] // 10+i][pos[0] // 10+j].is_wall = True
                                     except IndexError:
                                         pass
                     except AttributeError:
@@ -123,6 +124,9 @@ class Board:
         step = 1
         #durch while ersetzen
         while run:
+            if step == 2000:
+                #node nicht erreichbar
+                run = False
 
             self.undo_exhausted()
 
