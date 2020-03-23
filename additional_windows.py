@@ -85,7 +85,7 @@ class InstanceManager:
         self.master = Tk()
         self.master.maxsize(width=150, height=60)
 
-        new_map_button = Button(master=self.master, text="Load new Map", command=self.set_new_game_true)
+        new_map_button = Button(master=self.master, text="Create new Map", command=self.set_new_game_true)
         new_map_button.place(x=10, y=10)
         exit_button = Button(master=self.master, text="Exit", command=self.set_new_game_false)
         exit_button.place(x=110, y=10)
