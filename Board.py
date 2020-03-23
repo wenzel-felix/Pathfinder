@@ -161,7 +161,8 @@ class Board:
 
 
 def main():
-    b = Board()
+    Board()
+    Board()
 
 
 main()

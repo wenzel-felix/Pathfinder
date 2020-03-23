@@ -9,8 +9,6 @@ class Collector:
     end_x = 10
     end_y = 8
 
-    master = Tk()
-    master.maxsize(width=180, height=150)
 
     def submit(self):
         if int(self.start_x_entry.get()) > 79:
@@ -33,6 +31,9 @@ class Collector:
 
 
     def __init__(self):
+
+        self.master = Tk()
+        self.master.maxsize(width=180, height=150)
 
         # labels for start
         start_main_label = Label(master=self.master, text="Set your starting point")
