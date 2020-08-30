@@ -20,4 +20,4 @@ When you have finished customizing the terrain, just press "Space" to start the 
 
 To restart or exit the program close the pygame-window and a small menu-window will pop-up.
 
-->v2 in making
+->v2 in progress
